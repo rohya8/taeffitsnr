@@ -59,8 +59,10 @@ public class CustomerUtils implements AndroidConstants{
 		if(addToStack)
 			fragmentTransaction.addToBackStack(fragment.getClass().getName()).replace(R.id.container_body, fragment);
 		else
-			fragmentTransaction.replace(R.id.container_body, fragment);
+			{
 			fragmentTransaction.addToBackStack(null);
+			fragmentTransaction.replace(R.id.container_body, fragment);
+			}
 		fragmentTransaction.commit();
 	}
 

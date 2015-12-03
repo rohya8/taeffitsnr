@@ -1,8 +1,8 @@
 package com.rns.tiffeat.mobile;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Context;
@@ -56,22 +56,22 @@ public class QuickOrderFragment extends Fragment implements OnClickListener,Andr
 
 	private void getMealDate(Map<MealType, Date> availableMealType2) {
 
-		if(availableMealType2.get(MealType.LUNCH)!=null)
+		dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		
+		if(availableMealType2.get("LUNCH")!=null)
 		{
 			lunchaddr.setVisibility(View.VISIBLE);
-			lunchdate=availableMealType2.get(MealType.LUNCH);
-
-			if(lunchdate!=null )
-				lunch.setText("Lunch for ( " + dateFormat.format(lunchdate) +" )");
+			
+			//lunchdate=availableMealType2.get("LUNCH");
+			lunch.setText("Lunch for ( " + availableMealType2.get("LUNCH")  +" )");
+				
 			lunch.setVisibility(View.VISIBLE);
 		}
-		else if(availableMealType2.get(MealType.DINNER)!=null)
+		if(availableMealType2.get("DINNER")!=null)
 		{
 			lunchaddr.setVisibility(View.VISIBLE);
-			dinnerdate=availableMealType2.get(MealType.DINNER);
-
-			if(dinnerdate!=null )
-				dinner.setText("Lunch for ( " + dateFormat.format(dinnerdate) +" )");
+			//dinnerdate=availableMealType2.get("DINNER");
+			dinner.setText("Dinner for ( " + availableMealType2.get("DINNER") +" )");
 			dinner.setVisibility(View.VISIBLE);
 		}
 	}
@@ -175,7 +175,7 @@ public class QuickOrderFragment extends Fragment implements OnClickListener,Andr
 
 		case R.id.quick_order_screen_proceed_button:
 
-			if(Validation.isNetworkAvailable(getActivity()))
+			if(!Validation.isNetworkAvailable(getActivity()))
 			{
 				Validation.checknetwork(getActivity());
 			}

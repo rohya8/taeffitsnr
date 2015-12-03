@@ -59,22 +59,22 @@ OnClickListener, AndroidConstants {
 
 	private void getMealDate(Map<MealType, Date> availableMealType2) {
 
-		if(availableMealType2.get(MealType.LUNCH)!=null)
+		dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
+		if(availableMealType2.get("LUNCH")!=null)
 		{
 			lunchaddr.setVisibility(View.VISIBLE);
-			lunchdate=availableMealType2.get(MealType.LUNCH);
 
-			if(lunchdate!=null )
-				lunch.setText("Lunch for ( " + dateFormat.format(lunchdate) +" )");
+			//lunchdate=availableMealType2.get("LUNCH");
+			//lunch.setText("Lunch for ( " + availableMealType2.get("LUNCH")  +" )");
+			lunch.setText("Lunch ");
 			lunch.setVisibility(View.VISIBLE);
 		}
-		else if(availableMealType2.get(MealType.DINNER)!=null)
+		if(availableMealType2.get("DINNER")!=null)
 		{
 			lunchaddr.setVisibility(View.VISIBLE);
-			dinnerdate=availableMealType2.get(MealType.DINNER);
-
-			if(dinnerdate!=null )
-				dinner.setText("Lunch for ( " + dateFormat.format(dinnerdate) +" )");
+			//dinnerdate=availableMealType2.get("DINNER");
+			dinner.setText("Dinner ");
 			dinner.setVisibility(View.VISIBLE);
 		}
 	}
@@ -150,6 +150,7 @@ OnClickListener, AndroidConstants {
 		// customerOrder = new Gson().fromJson(object, CustomerOrder.class);
 
 		customerData();
+		getMealDate(availableMealType);
 	}
 
 	private void customerData() {
@@ -168,33 +169,33 @@ OnClickListener, AndroidConstants {
 			wallet.setText(customerOrder.getCustomer().getBalance().toString()); 
 
 
-//		if(MealType.BOTH.equals(customerOrder.getMealType()))
-//		{
-//			both.setVisibility(View.VISIBLE);
-//			lunch.setVisibility(View.VISIBLE);
-//			dinner.setVisibility(View.VISIBLE);
-//
-//			if(lunchdate!=null && dinnerdate!=null)
-//			{
-//				lunch.setText("Lunch for ( " + dateFormat.format(lunchdate) +" )");
-//				dinner.setText("Dinner for ( " + dateFormat.format( dinnerdate) +" )");
-//			}
-//		}
-//		else if(MealType.LUNCH.equals(customerOrder.getMealType()))
-//		{
-//			lunchaddr.setVisibility(View.VISIBLE);
-//			if(lunchdate!=null )
-//				lunch.setText("Lunch for ( " + dateFormat.format(lunchdate) +" )");
-//			lunch.setVisibility(View.VISIBLE);
-//		}
-//		else if(MealType.DINNER.equals(customerOrder.getMealType()))
-//		{
-//			lunchaddr.setVisibility(View.VISIBLE);
-//			dinner.setVisibility(View.VISIBLE);
-//			if( dinnerdate!=null)
-//				dinner.setText("Dinner for ( " + dateFormat.format( dinnerdate) +" )");
-//			lunchaddr.setHint("Dinner Address");
-//		}
+		//		if(MealType.BOTH.equals(customerOrder.getMealType()))
+		//		{
+		//			both.setVisibility(View.VISIBLE);
+		//			lunch.setVisibility(View.VISIBLE);
+		//			dinner.setVisibility(View.VISIBLE);
+		//
+		//			if(lunchdate!=null && dinnerdate!=null)
+		//			{
+		//				lunch.setText("Lunch for ( " + dateFormat.format(lunchdate) +" )");
+		//				dinner.setText("Dinner for ( " + dateFormat.format( dinnerdate) +" )");
+		//			}
+		//		}
+		//		else if(MealType.LUNCH.equals(customerOrder.getMealType()))
+		//		{
+		//			lunchaddr.setVisibility(View.VISIBLE);
+		//			if(lunchdate!=null )
+		//				lunch.setText("Lunch for ( " + dateFormat.format(lunchdate) +" )");
+		//			lunch.setVisibility(View.VISIBLE);
+		//		}
+		//		else if(MealType.DINNER.equals(customerOrder.getMealType()))
+		//		{
+		//			lunchaddr.setVisibility(View.VISIBLE);
+		//			dinner.setVisibility(View.VISIBLE);
+		//			if( dinnerdate!=null)
+		//				dinner.setText("Dinner for ( " + dateFormat.format( dinnerdate) +" )");
+		//			lunchaddr.setHint("Dinner Address");
+		//		}
 
 	}
 

@@ -138,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/textview_address"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal" >
+                    android:orientation="vertical" >
 
                     <RadioButton
                         android:id="@+id/quick_order_screen_radioButton_lunch"

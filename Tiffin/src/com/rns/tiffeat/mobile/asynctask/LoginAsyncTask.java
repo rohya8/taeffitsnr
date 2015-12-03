@@ -96,16 +96,6 @@ public class LoginAsyncTask extends AsyncTask<String, String, String>
 		availableMealType= (Map<MealType, Date>) customerorderavail.get("mealType");
 		customerOrder = new Gson().fromJson(customerOrderString, CustomerOrder.class);
 
-
-
-//		if(availableMealType.containsKey(MealType.LUNCH) && availableMealType.containsKey(MealType.DINNER))
-//			customerOrder.setMealType(MealType.BOTH);	
-//		else if(availableMealType.containsKey(MealType.LUNCH))
-//			customerOrder.setMealType(MealType.LUNCH);
-//		else if(availableMealType.containsKey(MealType.DINNER))
-//			customerOrder.setMealType(MealType.DINNER);
-
-
 		return resultLogin; 
 
 	}
@@ -134,18 +124,6 @@ public class LoginAsyncTask extends AsyncTask<String, String, String>
 			fragment = new QuickOrderFragment(customerOrder,availableMealType);
 		else if(customerOrder.getMealFormat().equals(MealFormat.SCHEDULED))
 			fragment = new ScheduledOrderFragment(customerOrder,availableMealType);	
-
-		//
-		//		Bundle bundle = new Bundle();
-		//
-		//		bundle.putString("MyObject", customerOrderobj);
-		//
-		//		fragment.setArguments(bundle);
-
-		//		FragmentManager fragmentManager = mlogin.getSupportFragmentManager();
-		//		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		//		fragmentTransaction.replace(R.id.container_body, fragment);
-		//		fragmentTransaction.commit();
 
 
 		CustomerUtils.nextFragment(fragment,mlogin.getSupportFragmentManager(),false);

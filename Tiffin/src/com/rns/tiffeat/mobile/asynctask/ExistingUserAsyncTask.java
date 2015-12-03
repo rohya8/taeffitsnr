@@ -70,16 +70,7 @@ public class ExistingUserAsyncTask extends AsyncTask<String ,String , String> im
 		availableMealType= (Map<MealType, Date>) customerorderavail.get("mealType");
 		
 		customerOrder = new Gson().fromJson(customerOrderString, CustomerOrder.class);
-
-//		String mealtp=mealTypeList.toString();
-
-		if(availableMealType.containsKey(MealType.LUNCH) && availableMealType.containsKey(MealType.DINNER))
-			customerOrder.setMealType(MealType.BOTH);	
-		else if(availableMealType.containsKey(MealType.LUNCH))
-			customerOrder.setMealType(MealType.LUNCH);
-		else if(availableMealType.containsKey(MealType.DINNER))
-			customerOrder.setMealType(MealType.DINNER);
-
+		
 		return result1; 
 
 	}
@@ -112,17 +103,12 @@ public class ExistingUserAsyncTask extends AsyncTask<String ,String , String> im
 		else if(customerOrder.getMealFormat().toString().equals(MealFormat.SCHEDULED.toString()))
 			fragment = new ScheduledOrderFragment(customerOrder,availableMealType);	
 
-		Bundle bundle = new Bundle();
+//		Bundle bundle = new Bundle();
+//
+//		bundle.putString("MyObject", customerOrderobj);
+//
+//		fragment.setArguments(bundle);
 
-		bundle.putString("MyObject", customerOrderobj);
-
-		fragment.setArguments(bundle);
-
-//		FragmentManager fragmentManager = mexistinguser.getSupportFragmentManager();
-//		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//		fragmentTransaction.replace(R.id.container_body, fragment);
-//		fragmentTransaction.commit();
-		
 		CustomerUtils.nextFragment(fragment, mexistinguser.getSupportFragmentManager(),true);
 
 	}
