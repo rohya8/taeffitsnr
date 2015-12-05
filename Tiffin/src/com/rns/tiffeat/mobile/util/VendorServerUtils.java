@@ -14,33 +14,27 @@ public class VendorServerUtils implements AndroidConstants {
 
 	private static String result = "";
 
-	public static String getVendorForArea(String pinCode) 
-	{
+	public static String getVendorForArea(String pinCode) {
 
 		final Map<String, Object> uriVariables = new HashMap<String, Object>();
-		uriVariables.put(PIN_CODE,pinCode);
+		uriVariables.put(PIN_CODE, pinCode);
 		Log.d(MYTAG, "Result of vendor search :" + result);
-		result = CoreServerUtils.serverCall(GET_VENDORS_FOR_AREA, uriVariables,HttpMethod.POST).getBody();
+		result = CoreServerUtils.serverCall(GET_VENDORS_FOR_AREA, uriVariables, HttpMethod.POST).getBody();
 		Log.d(MYTAG, "Result of vendor search :" + result);
 		return result;
 	}
 
-	public static String createVendorImageUrl(Vendor vendor) 
-	{
+	public static String createVendorImageUrl(Vendor vendor) {
 		String url = ROOT_URL + "downloadVendorImageAndroid?vendor=" + vendor.getEmail();
 		Log.d(MYTAG, "URL is :" + url);
 		return url;
 	}
-	
-	public static String createMealImageUrl(Meal meal) 
-	{
+
+	public static String createMealImageUrl(Meal meal) {
 		CustomerServerUtils.removeCircularReferences(meal);
 		String url = ROOT_URL + "downloadImageAndroid?vendor=" + meal.getId();
 		Log.d(MYTAG, "URL is :" + url);
 		return url;
 	}
-	
-	
+
 }
-
-

@@ -1,69 +1,67 @@
 package com.rns.tiffeat.mobile.asynctask;
 
-
-
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
 import com.rns.tiffeat.mobile.FirstTimeUse;
-import com.rns.tiffeat.mobile.R;
+import com.rns.tiffeat.mobile.Validation;
+import com.rns.tiffeat.mobile.util.AndroidConstants;
 import com.rns.tiffeat.mobile.util.CoreServerUtils;
 import com.rns.tiffeat.mobile.util.CustomerUtils;
+import com.rns.tiffeat.mobile.util.UserUtils;
 import com.rns.tiffeat.web.bo.domain.CustomerOrder;
 
-public class GetNewOrderAreaAsynctask extends AsyncTask<String, String, String> {
-
-	//private static String url_login = "192.168.1.11:8080/tiffeat-web/getAreasAndroid";
+public class GetNewOrderAreaAsynctask extends AsyncTask<String, String, String> implements AndroidConstants {
 
 	FragmentActivity mneworder;
 	CustomerOrder customerOrder;
-	ProgressDialog pd ;
+	ProgressDialog progressDialog;
 
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		pd = new ProgressDialog(mneworder);
-		pd.setTitle("Download Vendors ");
-		pd.setMessage("Loading...");
-		pd.setCancelable(false);
-		pd.show();
+		progressDialog = UserUtils.showLoadingDialog(mneworder, "Download Vendors ", "Loading.....");
 	}
 
+	public GetNewOrderAreaAsynctask(FragmentActivity splashScreen, CustomerOrder customerOrder2) {
 
-	public GetNewOrderAreaAsynctask(FragmentActivity  splashScreen, CustomerOrder customerOrder2) 
-	{
-
-		mneworder=splashScreen;
-		customerOrder=customerOrder2;
+		mneworder = splashScreen;
+		customerOrder = customerOrder2;
 
 	}
-
 
 	@Override
 	protected String doInBackground(String... arg) {
 
-		CoreServerUtils.retrieveVendorAreaNames();
-		return "Hello";
+		if (!Validation.isNetworkAvailable(mneworder)) {
+			return null;
+		}
+		try {
+			CoreServerUtils.retrieveVendorAreaNames();
+			return "Hello";
+
+		} catch (Exception e) {
+		}
+		return null;
 	}
 
 	protected void onPostExecute(String result) {
+
+		progressDialog.dismiss();
+
+		if (result == null) {
+			Validation.showError(mneworder, ERROR_FETCHING_DATA);
+			return;
+		}
+
 		Toast.makeText(mneworder, result, Toast.LENGTH_LONG).show();
-		pd.dismiss();
-		
 		Fragment fragment = null;
 		fragment = new FirstTimeUse(customerOrder);
-//		FragmentManager fragmentManager = mneworder.getSupportFragmentManager();
-//		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//		fragmentTransaction.replace(R.id.container_body, fragment);
-//		fragmentTransaction.commit();
-		
-		CustomerUtils.nextFragment(fragment,mneworder.getSupportFragmentManager() ,true);
 
+		CustomerUtils.nextFragment(fragment, mneworder.getSupportFragmentManager(), true);
 
 	};
 

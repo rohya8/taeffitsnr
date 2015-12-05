@@ -32,10 +32,8 @@ public class QuickOrderFragment extends Fragment implements OnClickListener,Andr
 	private EditText lunchaddr;
 
 	private Button proceed;
-	private String lunchadress,dinneradress,bothaddress;
 	private CustomerOrder customerOrder; 
 	private TextView tiffindesc,name,emailid,phone,amount;
-	private String customervendorname,customertiffindesc,customername,customeremailid,customerphone,customeramount;
 	private View rootView;
 	Context context;
 	private Date lunchdate, dinnerdate;
@@ -53,18 +51,14 @@ public class QuickOrderFragment extends Fragment implements OnClickListener,Andr
 
 	}
 
-
 	private void getMealDate(Map<MealType, Date> availableMealType2) {
 
 		dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		
 		if(availableMealType2.get("LUNCH")!=null)
 		{
 			lunchaddr.setVisibility(View.VISIBLE);
-			
 			//lunchdate=availableMealType2.get("LUNCH");
 			lunch.setText("Lunch for ( " + availableMealType2.get("LUNCH")  +" )");
-				
 			lunch.setVisibility(View.VISIBLE);
 		}
 		if(availableMealType2.get("DINNER")!=null)
@@ -83,20 +77,21 @@ public class QuickOrderFragment extends Fragment implements OnClickListener,Andr
 
 		rootView = inflater.inflate(R.layout.fragment_quick_order, container, false);
 
-		initialise();
-
-		lunch.setOnClickListener(this);
-		dinner.setOnClickListener(this);
-		proceed.setOnClickListener(this);
-		codpayment.setOnClickListener(this);
-		onlinepayment.setOnClickListener(this);
-
+		if (!Validation.isNetworkAvailable(getActivity())) {
+			Validation.showError(getActivity(), ERROR_NO_INTERNET_CONNECTION);
+		} 
+		else{
+			initialise();
+			lunch.setOnClickListener(this);
+			dinner.setOnClickListener(this);
+			proceed.setOnClickListener(this);
+			codpayment.setOnClickListener(this);
+			onlinepayment.setOnClickListener(this);
+		}
 		return rootView;
 
 	}
 	private void initialise( ) {
-
-
 		lunch=(RadioButton) rootView.findViewById(R.id.quick_order_screen_radioButton_lunch);
 		dinner=(RadioButton) rootView.findViewById(R.id.quick_order_screen_radioButton_dinner);
 		codpayment=(RadioButton) rootView.findViewById(R.id.quick_order_screen_radioButton_cashondelivery);
@@ -109,10 +104,6 @@ public class QuickOrderFragment extends Fragment implements OnClickListener,Andr
 		phone=(EditText) rootView.findViewById(R.id.quick_order_screen_editText_Phoneno);
 		amount=(EditText) rootView.findViewById(R.id.quick_order_screen_editText_Price);
 		proceed=(Button) rootView.findViewById(R.id.quick_order_screen_proceed_button);
-
-		//String object=getActivity().getIntent().getExtras().getString("CustomerOrder");
-		//customerOrder = new Gson().fromJson(object, CustomerOrder.class);
-
 		customerData();
 		getMealDate(availableMealType);
 	}
@@ -125,32 +116,6 @@ public class QuickOrderFragment extends Fragment implements OnClickListener,Andr
 		phone.setText(customerOrder.getCustomer().getPhone());
 		amount.setText(customerOrder.getMeal().getPrice().toString());
 
-//		if(MealType.BOTH.equals(customerOrder.getMealType()))
-//		{
-//			lunch.setVisibility(View.VISIBLE);
-//			dinner.setVisibility(View.VISIBLE);
-//
-//			if(lunchdate!=null && dinnerdate!=null)
-//			{
-//				lunch.setText("Lunch for ( " + dateFormat.format(lunchdate) +" )");
-//				dinner.setText("Dinner for ( " + dateFormat.format( dinnerdate) +" )");
-//			}
-//		}
-//		else if(MealType.LUNCH.equals(customerOrder.getMealType()))
-//		{
-//			lunchaddr.setVisibility(View.VISIBLE);
-//			if(lunchdate!=null )
-//				lunch.setText("Lunch for ( " + dateFormat.format(lunchdate) +" )");
-//			lunch.setVisibility(View.VISIBLE);
-//		}
-//		else if(MealType.DINNER.equals(customerOrder.getMealType()))
-//		{
-//			lunchaddr.setVisibility(View.VISIBLE);
-//			dinner.setVisibility(View.VISIBLE);
-//			if( dinnerdate!=null)
-//				dinner.setText("Dinner for ( " + dateFormat.format( dinnerdate) +" )");
-//			lunchaddr.setHint("Dinner Address");
-//		}
 	}
 
 	@Override
@@ -175,12 +140,10 @@ public class QuickOrderFragment extends Fragment implements OnClickListener,Andr
 
 		case R.id.quick_order_screen_proceed_button:
 
-			if(!Validation.isNetworkAvailable(getActivity()))
-			{
-				Validation.checknetwork(getActivity());
-			}
-			else
-			{
+			if (!Validation.isNetworkAvailable(getActivity())) {
+				Validation.showError(getActivity(), ERROR_NO_INTERNET_CONNECTION);
+			} 
+			else{
 				InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 				inputMethodManager.hideSoftInputFromWindow(getView().getWindowToken(),0);
 
@@ -226,7 +189,6 @@ public class QuickOrderFragment extends Fragment implements OnClickListener,Andr
 
 		customerOrder.setAddress(lunchaddr.getText().toString());
 
-		//customerOrder.setPaymentType(PaymentType.CASH);
 	}
 
 	@Override

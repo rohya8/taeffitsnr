@@ -3,9 +3,6 @@ package com.rns.tiffeat.mobile.adapter;
 import java.util.Collections;
 import java.util.List;
 
-import com.rns.tiffeat.mobile.NavDrawerItem;
-import com.rns.tiffeat.mobile.R;
-
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,13 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.rns.tiffeat.mobile.NavDrawerItem;
+import com.rns.tiffeat.mobile.R;
+
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDrawerAdapter.MyViewHolder> {
 	List<NavDrawerItem> data = Collections.emptyList();
 	private LayoutInflater inflater;
-	private Context context;
 
 	public NavigationDrawerAdapter(Context context, List<NavDrawerItem> data) {
-		this.context = context;
 		inflater = LayoutInflater.from(context);
 		this.data = data;
 	}
@@ -54,6 +52,6 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 			super(itemView);
 			title = (TextView) itemView.findViewById(R.id.nav_drawer_title);
 		}
-	} 
+	}
 
 }

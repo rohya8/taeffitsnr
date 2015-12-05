@@ -1,8 +1,6 @@
 package com.rns.tiffeat.mobile.adapter;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import android.R;
 import android.content.Context;
 import android.graphics.Typeface;

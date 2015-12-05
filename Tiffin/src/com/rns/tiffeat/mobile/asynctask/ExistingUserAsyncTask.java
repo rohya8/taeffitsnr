@@ -3,113 +3,98 @@ package com.rns.tiffeat.mobile.asynctask;
 import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.rns.tiffeat.mobile.QuickOrderFragment;
-import com.rns.tiffeat.mobile.R;
 import com.rns.tiffeat.mobile.ScheduledOrderFragment;
+import com.rns.tiffeat.mobile.Validation;
 import com.rns.tiffeat.mobile.util.AndroidConstants;
 import com.rns.tiffeat.mobile.util.CustomerServerUtils;
 import com.rns.tiffeat.mobile.util.CustomerUtils;
-import com.rns.tiffeat.web.bo.domain.Customer;
+import com.rns.tiffeat.mobile.util.UserUtils;
 import com.rns.tiffeat.web.bo.domain.CustomerOrder;
 import com.rns.tiffeat.web.bo.domain.MealFormat;
 import com.rns.tiffeat.web.bo.domain.MealType;
 
-public class ExistingUserAsyncTask extends AsyncTask<String ,String , String> implements AndroidConstants
-{
+public class ExistingUserAsyncTask extends AsyncTask<String, String, String> implements AndroidConstants {
 
 	private FragmentActivity mexistinguser;
 	private ProgressDialog progressdialog;
 	private CustomerOrder customerOrder;
 	private String result1;
-	private Map<MealType,Date> availableMealType;
+	private Map<MealType, Date> availableMealType;
 
-	public ExistingUserAsyncTask(FragmentActivity contxt,CustomerOrder customerOrder) {
-		mexistinguser=contxt;
-		this.customerOrder=customerOrder;
+	public ExistingUserAsyncTask(FragmentActivity contxt, CustomerOrder customerOrder) {
+		mexistinguser = contxt;
+		this.customerOrder = customerOrder;
 	}
 
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		progressdialog = new ProgressDialog(mexistinguser);
-		progressdialog.setMessage("Please Wait...");
-		progressdialog.setTitle("Download Data ");
-		progressdialog.setCancelable(false);
-		progressdialog.show();
+		progressdialog = UserUtils.showLoadingDialog(mexistinguser, "Download Data ", "Preparing.....");
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected String doInBackground(String... args) 
-	{
+	protected String doInBackground(String... args) {
+		if (!Validation.isNetworkAvailable(mexistinguser)) {
+			return null;
+		}
+		try {
+			result1 = CustomerServerUtils.customerGetMealAvailable(customerOrder);
+			Type typeMap = new TypeToken<Map<String, Object>>() {
+			}.getType();
 
-		result1 =  CustomerServerUtils.customerGetMealAvailable(customerOrder);
+			Map<String, Object> customerorderavail = new HashMap<String, Object>();
 
-		Type typeMap=new TypeToken<Map<String,Object>>(){}.getType();
+			customerorderavail = new Gson().fromJson(result1, typeMap);
 
-		Map<String, Object> customerorderavail = new HashMap<String, Object>();
+			String customerOrderString = (String) customerorderavail.get("customerOrder");
+			availableMealType = (Map<MealType, Date>) customerorderavail.get("mealType");
 
-		customerorderavail=new Gson().fromJson(result1, typeMap);
+			customerOrder = new Gson().fromJson(customerOrderString, CustomerOrder.class);
 
-
-		String customerOrderString = (String) customerorderavail.get("customerOrder");
-		availableMealType= (Map<MealType, Date>) customerorderavail.get("mealType");
-		
-		customerOrder = new Gson().fromJson(customerOrderString, CustomerOrder.class);
-		
-		return result1; 
-
+			return result1;
+		} catch (Exception e) {
+		}
+		return null;
 	}
 
-
 	@Override
-	protected void onPostExecute(String result) 
-	{
+	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
 		progressdialog.dismiss();
-		if(customerOrder != null) {
-			nextActivity();
+		if (result == null) {
+			Validation.showError(mexistinguser, ERROR_FETCHING_DATA);
+			return;
 		}
-		else
-		{
+		if (customerOrder != null) {
+			nextActivity();
+		} else {
 			Toast.makeText(mexistinguser, "Something Went Wrong !!!", Toast.LENGTH_SHORT).show();
 		}
 
 	}
 
-
 	private void nextActivity() {
 
-		String customerOrderobj=new Gson().toJson(customerOrder, CustomerOrder.class);
+		Fragment fragment = null;
 
-		Fragment fragment = null;	
-		
-		if(customerOrder.getMealFormat().toString().equals(MealFormat.QUICK.toString()))
-			fragment = new QuickOrderFragment(customerOrder,availableMealType);
-		else if(customerOrder.getMealFormat().toString().equals(MealFormat.SCHEDULED.toString()))
-			fragment = new ScheduledOrderFragment(customerOrder,availableMealType);	
+		if (customerOrder.getMealFormat().toString().equals(MealFormat.QUICK.toString()))
+			fragment = new QuickOrderFragment(customerOrder, availableMealType);
+		else if (customerOrder.getMealFormat().toString().equals(MealFormat.SCHEDULED.toString()))
+			fragment = new ScheduledOrderFragment(customerOrder, availableMealType);
 
-//		Bundle bundle = new Bundle();
-//
-//		bundle.putString("MyObject", customerOrderobj);
-//
-//		fragment.setArguments(bundle);
-
-		CustomerUtils.nextFragment(fragment, mexistinguser.getSupportFragmentManager(),true);
+		CustomerUtils.nextFragment(fragment, mexistinguser.getSupportFragmentManager(), true);
 
 	}
 

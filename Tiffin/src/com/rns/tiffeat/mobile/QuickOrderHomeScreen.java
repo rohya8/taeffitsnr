@@ -1,42 +1,23 @@
 package com.rns.tiffeat.mobile;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-
-
-
-
-
-
 import com.rns.tiffeat.mobile.adapter.PreviousOrderListAdapter;
 import com.rns.tiffeat.mobile.adapter.QuickOrderListAdapter;
-import com.rns.tiffeat.mobile.asynctask.GetAreaAsynctask;
 import com.rns.tiffeat.mobile.asynctask.GetCurrentCustomerAsyncTask;
 import com.rns.tiffeat.mobile.asynctask.GetMealMenuAsyncTask;
 import com.rns.tiffeat.mobile.asynctask.GetNewOrderAreaAsynctask;
 import com.rns.tiffeat.mobile.util.AndroidConstants;
-import com.rns.tiffeat.mobile.util.CustomerUtils;
 import com.rns.tiffeat.mobile.util.FontChangeCrawler;
 import com.rns.tiffeat.web.bo.domain.Customer;
 import com.rns.tiffeat.web.bo.domain.CustomerOrder;
@@ -68,8 +49,6 @@ public class QuickOrderHomeScreen extends Fragment implements AndroidConstants
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		//		FragmentManager fragmentManager = getFragmentManager();
-		//		CustomerUtils.clearFragmentStack(fragmentManager); 
 		orderValidation();
 	}
 
@@ -82,9 +61,8 @@ public class QuickOrderHomeScreen extends Fragment implements AndroidConstants
 
 		customerOrder=new CustomerOrder();
 
-		if(!isNetworkAvailable())
-		{
-			showdialog();
+		if (!Validation.isNetworkAvailable(getActivity())) {
+			Validation.showError(getActivity(), ERROR_NO_INTERNET_CONNECTION);
 		}
 		else
 		{
@@ -96,17 +74,13 @@ public class QuickOrderHomeScreen extends Fragment implements AndroidConstants
 			else
 			{
 				initialise();
-
 				neworder.setOnClickListener(new OnClickListener() 
 				{
-
-
 					@Override
 					public void onClick(View arg0) 
 					{
-						if(!isNetworkAvailable())
-						{
-							showdialog();
+						if (!Validation.isNetworkAvailable(getActivity())) {
+							Validation.showError(getActivity(), ERROR_NO_INTERNET_CONNECTION);
 						}
 						else
 						{
@@ -121,10 +95,10 @@ public class QuickOrderHomeScreen extends Fragment implements AndroidConstants
 					@Override
 					public void onClick(View v) 
 					{
-						if(!isNetworkAvailable())
-						{
-							showdialog();
+						if (!Validation.isNetworkAvailable(getActivity())) {
+							Validation.showError(getActivity(), ERROR_NO_INTERNET_CONNECTION);
 						}
+
 						if(customer.getPreviousOrders().size()==0)
 						{
 							previousText.setText("You Don't Have Any Previous Order ");
@@ -164,6 +138,7 @@ public class QuickOrderHomeScreen extends Fragment implements AndroidConstants
 	}
 
 	public void prepareScreen() {
+
 		welcomeText.setText("Welcome " + customer.getName());
 		quickOrdersAdapter.setQuickHome(this);
 		previousOrderAdapter.setQuickHome(this);
@@ -176,12 +151,6 @@ public class QuickOrderHomeScreen extends Fragment implements AndroidConstants
 
 		todaylistview.setAdapter(quickOrdersAdapter);
 		previouslistview.setAdapter(previousOrderAdapter);
-
-		//		todaylistview.addHeaderView(neworder);
-		//		todaylistview.addFooterView(previousorder);
-		//		
-		//		if(customer.getPreviousOrders()==null || customer.getPreviousOrders().size()==0)
-		//			prevorder.setText("You Have No Previous Order");
 
 	}
 
@@ -197,13 +166,6 @@ public class QuickOrderHomeScreen extends Fragment implements AndroidConstants
 	}
 
 
-	private boolean isNetworkAvailable()
-	{
-		ConnectivityManager obj=(ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo objInfo=obj.getActiveNetworkInfo();
-		return objInfo!=null&&objInfo.isConnected();
-	}
-
 	private void ShowMenu(CustomerOrder customerOrder2) 
 	{
 		customerOrder2.setCustomer(customer);
@@ -218,28 +180,6 @@ public class QuickOrderHomeScreen extends Fragment implements AndroidConstants
 		welcomeText.setVisibility(View.GONE);
 	}
 
-	void showdialog()
-	{
-		final Dialog dialog = new Dialog(getActivity());
-		dialog.setContentView(R.layout.networkconnection);
-		dialog.setTitle("No Internet Connection");
-
-		Button dialogButton = (Button) dialog.findViewById(R.id.check_network_button);
-		// if button is clicked, close the custom dialog
-		dialogButton.setOnClickListener(new OnClickListener() 
-		{
-			@Override
-			public void onClick(View v) 
-			{
-				Intent i = new Intent(android.provider.Settings.ACTION_SETTINGS);
-				startActivity(i);
-				dialog.dismiss();
-			}
-		});
-		dialog.show();
-
-	}
-
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
@@ -250,10 +190,7 @@ public class QuickOrderHomeScreen extends Fragment implements AndroidConstants
 	}
 
 	private void orderValidation() {
-		// TODO Auto-generated method stub
 
-		// customerOrder= customer.getScheduledOrder().get(arraySize-1);
-		// schedulCustomerOrders.addAll(customer.getScheduledOrder());
 		if (customer.getScheduledOrder() == null
 				|| customer.getScheduledOrder().size() == 0) {
 			return;

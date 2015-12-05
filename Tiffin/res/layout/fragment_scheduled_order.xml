@@ -222,15 +222,7 @@
                 android:padding="10dp"
                 android:visibility="gone" />
 
-            <CheckBox
-                android:id="@+id/scheduled_order_checkBox_sameasabove"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Same As Above"
-                android:visibility="gone" />
-
-            <EditText
+                <EditText
                 android:id="@+id/scheduled_order_editText_DinnerAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
